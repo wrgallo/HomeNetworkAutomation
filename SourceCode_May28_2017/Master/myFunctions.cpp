@@ -965,7 +965,12 @@ void handleMessage(){
 
   //HANDLING VALID MESSAGES
   if( (messageRF24[0] == START_CHAR) ){
-
+    
+    if( DEBUG_PRINTING ){
+      softSerial.print("Got: ");
+      softSerial.println( messageRF24 );
+    }
+    
     if (messageRF24[5] == END_CHAR){
       
       if( messageRF24.substring(1,4) == "S1M" ){
@@ -1015,9 +1020,9 @@ void handleMessage(){
         
         if( buttonPressed > 9 ){ messageDisplay[11] = '1'; }
         
-        if(      buttonPressed == 0  ){ lamp1_State = 0; messageDisplay[12] = '0'; }
-        else if( buttonPressed == 1  ){ lamp1_State = 1; messageDisplay[12] = '1'; }
-        else if( buttonPressed == 2  ){ lamp1_State = 2; messageDisplay[12] = '2'; }
+        if(      buttonPressed == 0  ){ lamp1_State = 0; messageDisplay[12] = '0';report2Slave2(0); }
+        else if( buttonPressed == 1  ){ lamp1_State = 1; messageDisplay[12] = '1';report2Slave2(1); }
+        else if( buttonPressed == 2  ){ lamp1_State = 2; messageDisplay[12] = '2';report2Slave2(2); }
         else if( buttonPressed == 3  ){ messageDisplay[12] = '3'; }
         else if( buttonPressed == 4  ){ messageDisplay[12] = '4'; }
         else if( buttonPressed == 5  ){ messageDisplay[12] = '5'; }
@@ -1047,18 +1052,18 @@ void report2Slave2(uint8_t cmd){
   message[6]      = '\0';
   message[7]      = '\0';
 
-  if(     cmd == 0 ){ message[4] == '0'; }
-  else if(cmd == 1 ){ message[4] == '1'; }
-  else if(cmd == 2 ){ message[4] == '2'; }
-  else if(cmd == 3 ){ message[4] == '3'; }
-  else if(cmd == 4 ){ message[4] == '4'; }
-  else if(cmd == 5 ){ message[4] == '5'; }
-  else if(cmd == 6 ){ message[4] == '6'; }
-  else if(cmd == 7 ){ message[4] == '7'; }
-  else if(cmd == 8 ){ message[4] == '8'; }
-  else if(cmd == 9 ){ message[4] == '9'; }
+  if(     cmd == 0 ){ message[4] = '0'; }
+  else if(cmd == 1 ){ message[4] = '1'; }
+  else if(cmd == 2 ){ message[4] = '2'; }
+  else if(cmd == 3 ){ message[4] = '3'; }
+  else if(cmd == 4 ){ message[4] = '4'; }
+  else if(cmd == 5 ){ message[4] = '5'; }
+  else if(cmd == 6 ){ message[4] = '6'; }
+  else if(cmd == 7 ){ message[4] = '7'; }
+  else if(cmd == 8 ){ message[4] = '8'; }
+  else if(cmd == 9 ){ message[4] = '9'; }
 
-  //Request Slave 1 Status
+  //Send the message to the slave
   radio.stopListening();
   radio.openWritingPipe( pipes[2] );
   radio.write( message, sizeof(message) );
